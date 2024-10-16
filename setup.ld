@@ -6,25 +6,23 @@ SECTIONS
 {
 	. = 0x0;
 
-	.inittext			: { *(.inittext) }
-	.initdata			: { *(.initdata) }
-
-	.text BLOCK(4K) : ALIGN(4K)
+	.text :
 	{
+		*(.inittext)
 		*(.text)
 	}
 	
-	.rodata BLOCK(4K) : ALIGN(4K)
+	.rodata :
 	{
 		*(.rodata)
 	}
 
-	.data BLOCK(4K) : ALIGN(4K)
+	.data :
 	{
 		*(.data)
 	}
 
-	.bss BLOCK(4K) : ALIGN(4K)
+	.bss :
 	{
 		*(COMMON)
 		*(.bss)

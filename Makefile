@@ -1,8 +1,55 @@
+AS			= /home/yahong/Binutils/install/bin/amo-linux-as
+OBJCOPY		= /home/yahong/Binutils/install/bin/amo-linux-objcopy
 
-# this section should be fixed: lamune OS packing
-all:
-	@echo "makefile"
-	@./bin/as boot.s -o boot.o
-	@./bin/ld -T setup.ld boot.o -o boot
-#@./bin/objcopy -O binary elf_binary boot_binary
-#@rm elf_binary
+CC			= /home/yahong/GCC/install/bin/amo-linux-gcc
+CFLAGS		= -fno-builtin -fno-exceptions -fno-stack-protector \
+			  -nostdlib -nodefaultlibs -ffreestanding 
+
+LD			= /home/yahong/Binutils/install/bin/amo-linux-ld
+
+RM			= rm -rf
+
+BOOT		= boot.s
+
+SRCS		= $(BOOT)
+INCS		= -Iinclude
+
+OBJS		= $(patsubst %.s,%.o,$(SRCS)) $(patsubst %.c,%.o,$(SRCS))
+OBJS		:= $(filter %.o,$(OBJS))
+
+LINKER_CONF	= setup.ld
+
+BIN			= firmware
+COE			= firmware.coe
+
+all: $(OBJS) $(BIN) $(COE)
+
+%.o: %.s
+	@$(AS) $< -o $@
+	@echo "AS\t" $@
+
+%.o: %.c
+	@$(CC) $(CFLAGS) $(INCS) -S $< -o $(subst .o,.s,$@)
+	@echo "CC\t" $(subst .o,.s,$@)
+	@$(AS) $(subst .o,.s,$@) -o $@
+	@echo "AS\t" $@
+	@$(RM) $(subst .o,.s,$@)
+
+$(BIN):
+	@$(LD) -T $(LINKER_CONF) $(OBJS) -o $(BIN)
+	@echo "LD\t" $(BIN)
+
+$(COE):
+	@$(OBJCOPY) -O binary $(BIN) _temp_coe
+	@xxd -g4 _temp_coe | cut --characters=11-45 > $(COE)
+	@$(RM) _temp_coe
+	@echo "COE\t" $(COE)
+
+clean:
+	@$(RM) $(OBJS)
+	@echo "CLEAN\t" $(OBJS)
+
+fclean: clean
+	@$(RM) $(BIN) $(COE)
+	@echo "CLEAN\t" $(BIN) $(COE)
+
