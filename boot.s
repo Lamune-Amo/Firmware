@@ -3,13 +3,18 @@
 .section .inittext
 start:
 	; vector table
+	; 0x0
 	jmp reset
+	; 0x4
+	jmp undefined
+	; 0x8
 	jmp interrupt
+	; 0xC
+	jmp IRQ 
 
 ; far away jump
 reset:
 	; initialize MEMORY
-
 	; clear Video RAM
 	mov r1, $4096
 	mov r2, $8896
@@ -27,8 +32,15 @@ reset:
 .hlt:
 	jmp .hlt
 
+undefined:
+	; alert
+	; halt
+	jmp .hlt
+
 interrupt:
-	mov r0, $42 ; temporary
-	jmp r0
+	jmp lr
+
+IRQ:
+	jmp lr
 
 .ltorg
