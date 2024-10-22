@@ -10,7 +10,7 @@ start:
 	; 0x8
 	jmp interrupt
 	; 0xC
-	jmp IRQ 
+	jmp irq
 
 ; far away jump
 reset:
@@ -40,7 +40,7 @@ undefined:
 interrupt:
 	jmp lr
 
-IRQ:
+irq:
 	jmp lr
 
 .ltorg
