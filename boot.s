@@ -38,9 +38,9 @@ undefined:
 	jmp .hlt
 
 interrupt:
-	jmp lr
+	ret r26
 
 irq:
-	jmp lr
+	ret r26
 
 .ltorg
