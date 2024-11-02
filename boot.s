@@ -14,6 +14,8 @@ start:
 
 ; far away jump
 reset:
+	mov r0, $0
+	setvt r0, $0
 	; initialize MEMORY
 	; clear Video RAM
 	mov r1, $4096
